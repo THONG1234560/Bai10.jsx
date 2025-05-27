@@ -1,0 +1,121 @@
+import React, { useEffect, useState } from "react";
+
+const TodoList = () => {
+  const [todos, setTodos] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:3001/todos")
+      .then(response => response.json())
+      .then(data => setTodos(data));
+  }, []);
+
+  return (
+    <ul>
+      {todos.map(todo => (
+        <li key={todo.id}>
+          {todo.text} - {todo.completed ? "✅" : "❌"}
+        </li>
+      ))}
+    </ul>
+  );
+};
+
+export default TodoList;
+
+
+
+
+import React from "react";
+import { Pencil, Trash2 } from "lucide-react";
+
+const TodoItem = ({ text, completed }) => {
+  return (
+    <li className={`list-group-item d-flex justify-content-between align-items-center ${completed ? "list-group-item-success" : ""}`}>
+      {text}
+      <div className="d-flex gap-2">
+        <Pencil className="text-primary cursor-pointer" />
+        <Trash2 className="text-danger cursor-pointer" />
+      </div>
+    </li>
+  );
+};
+
+export default TodoItem;
+
+
+
+
+import React from "react";
+import AddTodo from "./AddTodo";
+import TodoFilter from "./TodoFilter";
+import TodoList from "./TodoList";
+import FooterActions from "./FooterActions";
+
+const TodoForm = () => {
+  return (
+    <div className="container mt-5">
+      <div className="card p-4 shadow">
+        <h1 className="text-center text-primary">Quản lý công việc</h1>
+        <AddTodo />
+        <TodoFilter />
+        <TodoList />
+        <FooterActions />
+      </div>
+    </div>
+  );
+};
+
+export default TodoForm;
+
+import React from "react";
+
+const TodoFilter = () => {
+  return (
+    <div className="btn-group d-flex mb-3">
+      <button className="btn btn-primary flex-grow-1">Tất cả</button>
+      <button className="btn btn-outline-secondary flex-grow-1">Hoàn thành</button>
+      <button className="btn btn-outline-secondary flex-grow-1">Đang thực hiện</button>
+    </div>
+  );
+};
+
+export default TodoFilter;
+
+
+
+
+import React from "react";
+
+const FooterActions = ({ clearCompletedTodos, clearAllTodos }) => {
+  return (
+    <div className="d-flex justify-content-between mt-3">
+      <button className="btn btn-danger" onClick={clearCompletedTodos}>
+        Xóa công việc hoàn thành
+      </button>
+      <button className="btn btn-danger" onClick={clearAllTodos}>
+        Xóa tất cả công việc
+      </button>
+    </div>
+  );
+};
+
+export default FooterActions;
+
+
+
+import React from "react";
+
+const AddTodo = () => {
+  return (
+    <div className="border p-3 rounded shadow-sm mb-3">
+      <input
+        type="text"
+        placeholder="Nhập tên công việc"
+        className="form-control mb-2"
+      />
+      <button className="btn btn-primary w-100">Thêm công việc</button>
+    </div>
+  );
+};
+
+export default AddTodo;
